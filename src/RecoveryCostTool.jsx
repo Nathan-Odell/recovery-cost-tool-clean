@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "./components/ui/input";
+import { Card, CardContent } from "./components/ui/card";
 
 const agents = {
   "Twigg Bros (S10 1HH)": { callOut: 45, freeMiles: 20, rate: 1.1, skates: 50, winching: 45, holidayCallOut: 50, base: "S10 1HH" },
