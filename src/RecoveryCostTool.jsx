@@ -27,7 +27,7 @@ export default function RecoveryCostTool() {
       const origins = encodeURIComponent(agent.base);
       const destinations = encodeURIComponent(`${breakdown}|${destination}|${agent.base}`);
       const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origins}&destinations=${destinations}&key=${API_KEY}`;
-      const proxy = "https://corsproxy.io/?";
+      const proxy = "https://thingproxy.freeboard.io/fetch/";
       try {
         const res = await axios.get(proxy + url);
         const legs = res.data.rows[0].elements;
@@ -42,6 +42,7 @@ export default function RecoveryCostTool() {
         const total = subtotal + vat;
         return { name, total: total.toFixed(2), miles: totalMiles.toFixed(1) };
       } catch (e) {
+        console.error(`Error for ${name}:`, e);
         return { name, total: "Error", miles: "Error" };
       }
     }));
