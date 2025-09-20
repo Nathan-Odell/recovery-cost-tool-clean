@@ -24,10 +24,12 @@ export default function RecoveryCostTool() {
 
   const fetchMileage = async () => {
     const all = await Promise.all(Object.entries(agents).map(async ([name, agent]) => {
-      const url = \`https://maps.googleapis.com/maps/api/distancematrix/json?origins=\${agent.base}&destinations=\${breakdown}|\${destination}|\${agent.base}&key=\${API_KEY}\`;
+      const origins = encodeURIComponent(agent.base);
+      const destinations = encodeURIComponent(`${breakdown}|${destination}|${agent.base}`);
+      const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origins}&destinations=${destinations}&key=${API_KEY}`;
       const proxy = "https://corsproxy.io/?";
       try {
-        const res = await axios.get(proxy + encodeURIComponent(url));
+        const res = await axios.get(proxy + url);
         const legs = res.data.rows[0].elements;
         const totalMiles = legs.reduce((acc, leg) => acc + (leg.distance.value / 1609.34), 0); // meters to miles
         const chargeableMiles = Math.max(totalMiles - agent.freeMiles, 0);
