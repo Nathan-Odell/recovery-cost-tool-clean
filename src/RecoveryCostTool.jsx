@@ -29,10 +29,21 @@ export default function RecoveryCostTool() {
       const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origins}&destinations=${destinations}&key=${API_KEY}`;
       const proxy = "https://corsproxy.io/?";
       try {
+        
+        const getDistance = async (from, to) => {
+          console.log("Fetching distance from", from, "to", to);
+          const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(from)}&destinations=${encodeURIComponent(to)}&key=${API_KEY}`;
+          const res = await axios.get(url);
+          const meters = res.data.rows[0].elements[0].distance.value;
+          console.log("Distance (miles):", meters / 1609.34);
+          return meters / 1609.34;
+        };
+
         const leg1 = await getDistance(agent.base, breakdown);
         const leg2 = await getDistance(breakdown, destination);
         const leg3 = await getDistance(destination, agent.base);
         const totalMiles = leg1 + leg2 + leg3
+    
         const chargeableMiles = Math.max(totalMiles - agent.freeMiles, 0);
         const callOutCost = isHoliday ? agent.holidayCallOut : agent.callOut;
         const mileageCost = chargeableMiles * agent.rate;
@@ -47,7 +58,7 @@ export default function RecoveryCostTool() {
         console.error(`Error fetching distance for ${name}:`, e);
         const message = e?.response?.data?.error_message || e.message || 'Unknown error';
         return { name, total: `Error: ${message}`, miles: "Error" };
-        
+    
       }
     }));
     setResults(all.sort((a, b) => parseFloat(a.total) - parseFloat(b.total)));
