@@ -27,11 +27,12 @@ export default function RecoveryCostTool() {
       const origins = encodeURIComponent(agent.base);
       const destinations = encodeURIComponent(`${breakdown}|${destination}|${agent.base}`);
       const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origins}&destinations=${destinations}&key=${API_KEY}`;
-      const proxy = "https://thingproxy.freeboard.io/fetch/";
+      const proxy = "https://corsproxy.io/?";
       try {
-        const res = await axios.get(proxy + url);
-        const legs = res.data.rows[0].elements;
-        const totalMiles = legs.reduce((acc, leg) => acc + (leg.distance.value / 1609.34), 0); // meters to miles
+        const leg1 = await getDistance(agent.base, breakdown);
+        const leg2 = await getDistance(breakdown, destination);
+        const leg3 = await getDistance(destination, agent.base);
+        const totalMiles = leg1 + leg2 + leg3
         const chargeableMiles = Math.max(totalMiles - agent.freeMiles, 0);
         const callOutCost = isHoliday ? agent.holidayCallOut : agent.callOut;
         const mileageCost = chargeableMiles * agent.rate;
@@ -42,7 +43,6 @@ export default function RecoveryCostTool() {
         const total = subtotal + vat;
         return { name, total: total.toFixed(2), miles: totalMiles.toFixed(1) };
       } catch (e) {
-        console.error(`Error for ${name}:`, e);
         return { name, total: "Error", miles: "Error" };
       }
     }));
