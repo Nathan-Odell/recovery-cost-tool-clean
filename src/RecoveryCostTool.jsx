@@ -82,7 +82,7 @@ export default function RecoveryCostTool() {
       <Input type="number" placeholder="Passengers (for onward travel)" value={passengers} onChange={e => setPassengers(Number(e.target.value))} />
 
       <label className="flex items-center gap-2">
-        <input type="checkbox" checked={isHoliday} onChange={e => setIsHoliday(e.target.checked)} /> Public Holiday?
+        <label>Breakdown Location:</label><label>Destination:</label><label>Skates Used (0-2):</label><label>Winching Time (minutes):</label><label>Passengers:</label><input type="checkbox" checked={isHoliday} onChange={e => setIsHoliday(e.target.checked)} /> Public Holiday?
       </label>
 
       <button onClick={fetchMileage} className="bg-blue-600 text-white px-4 py-2 rounded">
