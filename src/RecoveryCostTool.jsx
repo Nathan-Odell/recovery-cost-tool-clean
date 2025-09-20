@@ -43,7 +43,11 @@ export default function RecoveryCostTool() {
         const total = subtotal + vat;
         return { name, total: total.toFixed(2), miles: totalMiles.toFixed(1) };
       } catch (e) {
-        return { name, total: "Error", miles: "Error" };
+        
+        console.error(`Error fetching distance for ${name}:`, e);
+        const message = e?.response?.data?.error_message || e.message || 'Unknown error';
+        return { name, total: `Error: ${message}`, miles: "Error" };
+        
       }
     }));
     setResults(all.sort((a, b) => parseFloat(a.total) - parseFloat(b.total)));
